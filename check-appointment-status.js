@@ -29,18 +29,11 @@ require('dotenv').config();
   page.on('pageerror', err => console.log('PAGE ERROR:', err));
 
   try {
-    // await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus', { waitUntil: 'networkidle' });
-    await page.goto('https://icp.administracionelectronica.gob.es/icpplus/index.html', { waitUntil: 'networkidle' });
-
-    console.log('--- PAGE HTML START ---');
+    // Go directly to the form action URL
+    await page.goto('https://icp.administracionelectronica.gob.es/icpplustieb/citar?p=8&locale=es', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    console.log('--- PAGE HTML AFTER DIRECT NAVIGATION ---');
     console.log(await page.content());
     console.log('--- PAGE HTML END ---');
-
-    // await page.click('input#submit');
-
-    await page.waitForSelector('#divProvincias', { timeout: 30000 });
-    await page.selectOption('select#form', { label: province });
-    await page.click('#btnAceptar');
 
     // Select POLICE-NIE ASSIGNMENT appointment
     await page.waitForSelector('#divGrupoTramites');
