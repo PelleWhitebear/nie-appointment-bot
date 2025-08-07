@@ -8,17 +8,32 @@ require('dotenv').config();
   const yearOfBirth = process.env.YEAR_OF_BIRTH;
   // const country = process.env.COUNTRY;
 
+  // Set CI environment variable for Playwright
+  process.env.CI = 'true';
+
   const browser = await chromium.launch({ headless: true, channel: 'chrome', ignoreHTTPSErrors: true });
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
   });
+  // Optionally use persistent context for more realism
+  // const context = await chromium.launchPersistentContext('', {
+  //   headless: true,
+  //   channel: 'chrome',
+  //   ignoreHTTPSErrors: true,
+  //   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+  // });
   const page = await context.newPage();
   try {
     await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus', { waitUntil: 'networkidle' });
 
     // Click the submit button to proceed from the first page
-    await page.waitForSelector('input#submit', { timeout: 30000 });
-    await page.click('input#submit');
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 }),
+      page.click('input#submit')
+    ]);
+
+    // Log page content after click for debugging
+    console.log('Page content after submit:', await page.content());
 
     // Select your province
     await page.waitForSelector('#divProvincias', { timeout: 30000 });
