@@ -20,7 +20,7 @@ jobs:
           node-version: '24'
       - name: Install dependencies
         run: yarn install
-      - name: Install Playwright browsers
-        run: yarn playwright install
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: Run appointment check
         run: yarn start
