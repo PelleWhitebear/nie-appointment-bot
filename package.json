@@ -6,11 +6,12 @@
   "author": "Whitebear <pellehartvigandersen@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^17.2.1",
     "playwright": "^1.54.2"
-  }
-  ,
+  },
   "scripts": {
     "start": "node check-appointment-status.js"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.1"
   }
 }
