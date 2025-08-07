@@ -23,6 +23,11 @@ require('dotenv').config();
   //   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
   // });
   const page = await context.newPage();
+
+  // Add page event logging for debugging
+  page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+  page.on('pageerror', err => console.log('PAGE ERROR:', err));
+
   try {
     await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus', { waitUntil: 'networkidle' });
 
@@ -30,8 +35,11 @@ require('dotenv').config();
     console.log(await page.content());
     console.log('--- PAGE HTML END ---');
 
-    // Click the submit button to proceed from the first page
     await page.click('input#submit');
+
+    // Wait for navigation after form submit
+    await page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 });
+    // Wait for the province selector to appear
     await page.waitForSelector('#divProvincias', { timeout: 30000 });
     console.log('--- PAGE HTML AFTER SUBMIT ---');
     console.log(await page.content());
