@@ -1,4 +1,5 @@
 const { chromium } = require('playwright');
+const fs = require('fs');
 require('dotenv').config();
 
 (async () => {
@@ -8,39 +9,32 @@ require('dotenv').config();
   const yearOfBirth = process.env.YEAR_OF_BIRTH;
   // const country = process.env.COUNTRY;
 
-  // Set CI environment variable for Playwright
-  process.env.CI = 'true';
+  const browser = await chromium.launch({
+    headless: false,
+    ignoreHTTPSErrors: true,
+  });
 
-  const browser = await chromium.launch({ headless: true, channel: 'chrome', ignoreHTTPSErrors: true });
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
   });
-  // Optionally use persistent context for more realism
-  // const context = await chromium.launchPersistentContext('', {
-  //   headless: true,
-  //   channel: 'chrome',
-  //   ignoreHTTPSErrors: true,
-  //   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-  // });
+
   const page = await context.newPage();
 
-  // Add page event logging for debugging
   page.on('console', msg => console.log('PAGE LOG:', msg.text()));
   page.on('pageerror', err => console.log('PAGE ERROR:', err));
 
   try {
-    // Go directly to the form action URL
-    await page.goto('https://icp.administracionelectronica.gob.es/icpplustieb/citar?p=8&locale=es', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    console.log('--- PAGE HTML AFTER DIRECT NAVIGATION ---');
-    console.log(await page.content());
-    console.log('--- PAGE HTML END ---');
+    await page.goto('https://icp.administracionelectronica.gob.es/icpplustieb/citar?p=8&locale=es', {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000
+    });
 
-    // Select POLICE-NIE ASSIGNMENT appointment
+    console.log('Current URL:', page.url());
+
     await page.waitForSelector('#divGrupoTramites');
     await page.selectOption('select[name="tramiteGrupo[0]"]', '4031');
     await page.click('#btnAceptar');
 
-    // Skip requirement page 
     await page.waitForSelector('#btnEntrar');
     await page.click('#btnEntrar');
 
@@ -71,8 +65,18 @@ require('dotenv').config();
       console.error('Error while checking appointment status:', err);
     }
   } catch (err) {
-    console.error('Error during automation:', err);
-    console.error('Page HTML for debugging:', await page.content());
+    console.error('Automation failed:', err);
+    const html = await page.content();
+    const url = page.url();
+
+    console.error('Page URL at error:', url);
+    console.error('Page content at error:');
+
+    // Save HTML + Screenshot
+    fs.writeFileSync('/tmp/nie-error-page.html', html);
+    await page.screenshot({ path: '/tmp/nie-error-screenshot.png', fullPage: true });
+
+    console.log('Saved HTML and screenshot to /tmp for GitHub Actions artifact upload');
   }
 
   await browser.close();
