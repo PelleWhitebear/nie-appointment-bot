@@ -4,8 +4,6 @@ This is an automated bot written in JavaScript to check and search for available
 
 It was created to simplify the process of checking appointments, which requires manually selecting province and procedure, entering personal information, and checking availability—making it unnecessarily time-consuming.
 
-You can run this project locally or as a GitHub Action.
-
 ## Usage
 
 You can run this project locally or as a GitHub Action.
