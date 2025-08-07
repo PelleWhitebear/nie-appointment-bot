@@ -1,0 +1,16 @@
+{
+  "name": "nie-appointment-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/PelleWhitebear/nie-appointment-bot.git",
+  "author": "Whitebear <pellehartvigandersen@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "playwright": "^1.54.2"
+  }
+  ,
+  "scripts": {
+    "start": "node check-appointment-status.js"
+  }
+}
