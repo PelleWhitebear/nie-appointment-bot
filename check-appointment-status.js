@@ -26,11 +26,19 @@ require('dotenv').config();
   try {
     await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus', { waitUntil: 'networkidle' });
 
+    console.log('--- PAGE HTML START ---');
+    console.log(await page.content());
+    console.log('--- PAGE HTML END ---');
+
     // Click the submit button to proceed from the first page
     await Promise.all([
       page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 }),
       page.click('input#submit')
     ]);
+
+    console.log('--- PAGE HTML START ---');
+    console.log(await page.content());
+    console.log('--- PAGE HTML END ---');
 
     // Log page content after click for debugging
     console.log('Page content after submit:', await page.content());
