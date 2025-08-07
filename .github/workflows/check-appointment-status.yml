@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROVINCE: ${{ secrets.PROVINCE }}
-    #   PASSPORT_ID: ${{ secrets.PASSPORT_ID }}
-    #   NAME: ${{ secrets.NAME }}
+      PASSPORT_ID: ${{ secrets.PASSPORT_ID }}
+      NAME: ${{ secrets.NAME }}
       YEAR_OF_BIRTH: ${{ secrets.YEAR_OF_BIRTH }}
       COUNTRY: ${{ secrets.COUNTRY }}
     steps:
