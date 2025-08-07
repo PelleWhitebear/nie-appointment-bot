@@ -29,23 +29,15 @@ require('dotenv').config();
   page.on('pageerror', err => console.log('PAGE ERROR:', err));
 
   try {
-    await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus', { waitUntil: 'networkidle' });
+    // await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus', { waitUntil: 'networkidle' });
+    await page.goto('https://icp.administracionelectronica.gob.es/icpplus/index.html', { waitUntil: 'networkidle' });
 
     console.log('--- PAGE HTML START ---');
     console.log(await page.content());
     console.log('--- PAGE HTML END ---');
 
-    await page.click('input#submit');
+    // await page.click('input#submit');
 
-    // Wait for navigation after form submit
-    await page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 });
-    // Wait for the province selector to appear
-    await page.waitForSelector('#divProvincias', { timeout: 30000 });
-    console.log('--- PAGE HTML AFTER SUBMIT ---');
-    console.log(await page.content());
-    console.log('--- PAGE HTML END ---');
-
-    // Select your province
     await page.waitForSelector('#divProvincias', { timeout: 30000 });
     await page.selectOption('select#form', { label: province });
     await page.click('#btnAceptar');
