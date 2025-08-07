@@ -20,6 +20,9 @@ require('dotenv').config();
 
   const page = await context.newPage();
 
+  // Start tracing
+  await context.tracing.start({ screenshots: true, snapshots: true });
+
   page.on('console', msg => console.log('PAGE LOG:', msg.text()));
   page.on('pageerror', err => console.log('PAGE ERROR:', err));
 
@@ -28,8 +31,6 @@ require('dotenv').config();
       waitUntil: 'domcontentloaded',
       timeout: 30000
     });
-
-    console.log('Current URL:', page.url());
 
     await page.waitForSelector('#divGrupoTramites');
     await page.selectOption('select[name="tramiteGrupo[0]"]', '4031');
@@ -75,9 +76,10 @@ require('dotenv').config();
     // Save HTML + Screenshot
     fs.writeFileSync('/tmp/nie-error-page.html', html);
     await page.screenshot({ path: '/tmp/nie-error-screenshot.png', fullPage: true });
-
-    console.log('Saved HTML and screenshot to /tmp for GitHub Actions artifact upload');
   }
+
+  // Save the trace
+  await context.tracing.stop({ path: '/tmp/trace.zip' });
 
   await browser.close();
 })();
