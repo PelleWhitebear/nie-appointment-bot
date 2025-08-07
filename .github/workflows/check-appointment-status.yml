@@ -32,7 +32,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run NIE checker script
-        run: node check-appointment-status.js
+        run: xvfb-run -a node check-appointment-status.js
 
       - name: Upload logs if failure
         if: failure()
