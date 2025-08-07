@@ -8,7 +8,7 @@ require('dotenv').config();
   const yearOfBirth = process.env.YEAR_OF_BIRTH;
   // const country = process.env.COUNTRY;
 
-  const browser = await chromium.launch({ headless: false, ignoreHTTPSErrors: true });
+  const browser = await chromium.launch({ headless: true, ignoreHTTPSErrors: true });
   const page = await browser.newPage();
   await page.goto('https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus');
 
