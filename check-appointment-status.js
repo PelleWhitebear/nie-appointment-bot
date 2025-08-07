@@ -41,10 +41,9 @@ require('dotenv').config();
   await page.selectOption('#txtPaisNac', '108');
   await page.click('#btnEnviar');
 
-  await page.waitForTimeout(10000);
-
   // Check appointment status
   try {
+    await page.waitForSelector('p.mf-msg__info', { state: 'visible' });
     const infoText = await page.$eval('p.mf-msg__info', el => el.textContent?.trim() || '');
     console.log('mf-msg__info paragraph found. Raw text:', infoText);
     if (infoText.includes('En este momento no hay citas disponibles')) {
