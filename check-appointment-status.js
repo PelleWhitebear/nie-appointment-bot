@@ -31,17 +31,11 @@ require('dotenv').config();
     console.log('--- PAGE HTML END ---');
 
     // Click the submit button to proceed from the first page
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 }),
-      page.click('input#submit')
-    ]);
-
-    console.log('--- PAGE HTML START ---');
+    await page.click('input#submit');
+    await page.waitForSelector('#divProvincias', { timeout: 30000 });
+    console.log('--- PAGE HTML AFTER SUBMIT ---');
     console.log(await page.content());
     console.log('--- PAGE HTML END ---');
-
-    // Log page content after click for debugging
-    console.log('Page content after submit:', await page.content());
 
     // Select your province
     await page.waitForSelector('#divProvincias', { timeout: 30000 });
