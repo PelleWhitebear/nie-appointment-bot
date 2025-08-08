@@ -1,26 +1,42 @@
 name: Check NIE Appointment
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 * * * *' # hver time
 
 jobs:
-  check-appointment:
+  check-nie:
     runs-on: ubuntu-latest
+
     env:
       PROVINCE: ${{ secrets.PROVINCE }}
-    #   PASSPORT_ID: ${{ secrets.PASSPORT_ID }}
-    #   NAME: ${{ secrets.NAME }}
+      PASSPORT_ID: ${{ secrets.PASSPORT_ID }}
+      NAME: ${{ secrets.NAME }}
       YEAR_OF_BIRTH: ${{ secrets.YEAR_OF_BIRTH }}
       COUNTRY: ${{ secrets.COUNTRY }}
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Node.js
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: 24
+
       - name: Install dependencies
         run: yarn install
-      - name: Install Playwright browsers
-        run: yarn playwright install
-      - name: Run appointment check
-        run: yarn start
+
+      - name: Install Playwright (with browser deps)
+        run: npx playwright install --with-deps chromium
+
+      - name: Run NIE checker script
+        run: node check-appointment-status.js
+
+      - name: Upload Playwright trace
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-trace
+          path: /tmp/trace.zip
