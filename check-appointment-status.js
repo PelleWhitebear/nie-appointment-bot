@@ -10,7 +10,7 @@ require('dotenv').config();
   // const country = process.env.COUNTRY;
 
   const browser = await chromium.launch({
-    headless: false,
+    headless: true,
     ignoreHTTPSErrors: true,
   });
 
